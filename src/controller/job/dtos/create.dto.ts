@@ -2,8 +2,7 @@ import { IsString, IsEmail, Length, IsInt } from 'class-validator';
 export class createJobDto {
     @IsString()
     name: string;
-    @IsString()
-    permission: string;
+
     @IsString()
     industry: string;
     @IsString()
@@ -12,13 +11,12 @@ export class createJobDto {
     unit: string;
     @IsString()
     department: string;
-    @IsString()
-    function: string;
+
     @IsString()
     own: string;
 
-    @IsString()
-    system: string;
+    @IsInt()
+    systemId: number;
 
     @IsString()
     description: string;

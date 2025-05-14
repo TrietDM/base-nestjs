@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToMany,JoinTable } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToMany,JoinTable, OneToMany } from 'typeorm';
 import { FunctionEntity } from './function.entity';
+import { JobEntity } from './job.entity';
 @Entity('system')
 export class SystemEntity  {
   @PrimaryGeneratedColumn('increment')
@@ -7,6 +8,11 @@ export class SystemEntity  {
 
   @Column({type: 'varchar', length: 50})
   name: string;
+
+
+  @OneToMany(() => JobEntity, job => job.system)
+  jobs: JobEntity[];
+
 
   @ManyToMany(() => FunctionEntity, (func) => func.system , {eager: true}  )
   @JoinTable({

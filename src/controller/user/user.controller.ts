@@ -5,6 +5,9 @@ import { IUserRepository } from 'src/domain/repositories/userRepository.interfac
 import { createUserDto } from './dtos/register.dto';
 import { loginUserDto } from './dtos/login.dto';
 import { updateUserDto } from './dtos/update.dto';
+import { RegisterUserUseCase } from 'src/usecases/register.usecase';
+import { LoginUserUseCase } from 'src/usecases/login.usecase';
+import { UserListViewModel } from 'src/domain/model/user.model';
 
 
     @Controller('users')
@@ -12,11 +15,14 @@ import { updateUserDto } from './dtos/update.dto';
         constructor(
             @Inject('IUserRepository')
             private readonly userRepo: IUserRepository,
+            private readonly registerUserUseCase: RegisterUserUseCase,
+            private readonly loginUserUseCase: LoginUserUseCase
         ) {}
 
     @Get()
     async getallUsers() {
-        return this.userRepo.findAll();
+        const users = await this.userRepo.findAll();
+        return users.map((user) => new UserListViewModel(user)); 
     }
 
     @Get(':id')
@@ -33,12 +39,12 @@ import { updateUserDto } from './dtos/update.dto';
 
     @Post('/register')
     async register(@Body() body: createUserDto){
-        return this.userRepo.register(body);
+        return this.registerUserUseCase.execute(body);
     }
 
     @Post()
     async login(@Body() body: loginUserDto){
-        return this.userRepo.login(body);
+        return this.loginUserUseCase.execute(body);
     }
 
     @Put(':id')

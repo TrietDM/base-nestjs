@@ -9,6 +9,7 @@ export interface IJobRepository {
   updateJob(id: number, dto: updateJobDto): Promise<JobEntity>;
   updateStatus(id: number): Promise<JobEntity>;
   delete(id: number): Promise<any>;
-  filter(filter:{name?: string; system?: string; is_active?: boolean}): Promise<any>
-  search(filter:{name?: string; system?: string; is_active?: boolean}): Promise<any>
+  filter(filter:{name?: string; system?: number; is_active?: boolean}): Promise<any>
+  search(filter:{name?: string; system?: number; is_active?: boolean}): Promise<any>
+  save(data: Partial<JobEntity>):Promise<any>
 }

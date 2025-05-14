@@ -11,8 +11,10 @@ import { SystemRepository } from './system.repository';
 import { PermissionEntity } from '../entities/permission.entity';
 import { SystemEntity } from '../entities/system.entity';
 import { FunctionEntity } from '../entities/function.entity';
+import { RegisterUserUseCase } from 'src/usecases/register.usecase';
+import { LoginUserUseCase } from 'src/usecases/login.usecase';
 @Module({
-  imports: [TypeOrmConfigModule, TypeOrmModule.forFeature([UserEntity,JobEntity,PermissionEntity,SystemEntity,FunctionEntity])],
+  imports: [TypeOrmConfigModule, TypeOrmModule.forFeature([UserEntity,JobEntity,PermissionEntity,SystemEntity,FunctionEntity,RegisterUserUseCase,LoginUserUseCase])],
   providers: [
     {
       provide: 'IUserRepository',
@@ -34,6 +36,7 @@ import { FunctionEntity } from '../entities/function.entity';
       provide: 'ISystemRepository',
       useClass: SystemRepository,
     }
+    
   ],
   exports: ['IUserRepository',
     'IJobRepository',

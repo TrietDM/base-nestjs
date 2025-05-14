@@ -9,6 +9,7 @@ import * as timezone from 'dayjs/plugin/timezone';
 import { JobEntity } from '../entities/job.entity';
 import { createJobDto } from 'src/controller/job/dtos/create.dto';
 import { updateJobDto } from 'src/controller/job/dtos/update.dto';
+import { SystemEntity } from '../entities/system.entity';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -17,6 +18,8 @@ export class JobRepository implements IJobRepository {
   constructor(
     @InjectRepository(JobEntity)
     private jobRepo: Repository<JobEntity>,
+    @InjectRepository(SystemEntity)
+    private systemRepo: Repository<SystemEntity>,
     @InjectDataSource()
     private _dataSource: DataSource,
   ) {}
@@ -36,36 +39,40 @@ export class JobRepository implements IJobRepository {
     try{
       const existingJob = await this.jobRepo.findOne({where: {name: dto.name}});
       const code = await this.generateUniqueCode();
-
+      const system = await this.systemRepo.findOneBy({ id: dto.systemId });
+      
       if(existingJob)
         return { message: 'Choose another name'};
       const newJob = this.jobRepo.create({
         ...dto,
         code,
+      system,
       });
       
       return await this.jobRepo.save(newJob);
     }
     catch (err){    
-      console.error('Error creating user:', err);
+      console.error('Error creating job:', err);
     }
   }
 
 
-  async updateJob(id: number,dto: updateJobDto): Promise<JobEntity>{
-    const user = await this.jobRepo.findOne({
+  async updateJob(id: number,dto: updateJobDto): Promise<any>{
+    const job = await this.jobRepo.findOne({
       where :{id: id}
     });
-    const updatedUser = { ...user, ...dto };
+    const system = await this.systemRepo.findOneBy({ id: dto.systemId });
+    job.system = system;
+    const updatedUser = { ...job, ...dto };
     return await this.jobRepo.save(updatedUser);
   }
 
   async updateStatus(id: number): Promise<JobEntity>{
-    const user = await this.jobRepo.findOne({
+    const job = await this.jobRepo.findOne({
       where :{id: id}
     });
-    user.is_active = !user.is_active;
-    return await this.jobRepo.save(user);
+    job.is_active = !job.is_active;
+    return await this.jobRepo.save(job);
   }
 
   async delete(id: number): Promise<any> {
@@ -78,21 +85,21 @@ export class JobRepository implements IJobRepository {
   }
 
 
-  async search(filter:{name?: string; system?: string; is_active?: boolean}): Promise<any>{
-    return this.jobRepo.find({
-      where : [
-        { name: ILike(`%${filter.name}%`) },
-        { system: ILike(`%${filter.name}%`) },
-        { is_active: filter.is_active },
-      ]
-    });
+  async search(search:{name?: string; system?: number; is_active?: boolean}): Promise<JobEntity[]>{
+    const where: any = {};
+
+    if (search.name) where.name = search.name;
+    if (search.system) where.system = {id: search.system};
+    if (search.is_active !== undefined) where.is_active = search.is_active;
+
+    return this.jobRepo.find({ where });
   }
 
-  async filter(filter:{name?: string; system?: string; is_active?: boolean}): Promise<any>{
+  async filter(filter:{name?: string; system?: number; is_active?: boolean}): Promise<any>{
     const where: any = {};
 
     if (filter.name) where.name = filter.name;
-    if (filter.system) where.system = filter.system;
+    if (filter.system) where.system = {id: filter.system};
     if (filter.is_active !== undefined) where.is_active = filter.is_active;
 
     return this.jobRepo.find({ where });
@@ -121,6 +128,11 @@ export class JobRepository implements IJobRepository {
     // Format: R-000001
     const nextCode = `${prefix}${String(nextNumber).padStart(6, '0')}`;
     return nextCode;
+  }
+
+  async save(data: Partial<JobEntity>): Promise<any>{
+    const save = await this.jobRepo.create(data)
+    return this.jobRepo.save(save);
   }
 
 }

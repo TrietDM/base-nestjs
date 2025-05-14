@@ -8,9 +8,10 @@ import { JobController } from './job/job.controller';
 import { FunctionController } from './function/function.controller';
 import { PermissionController } from './permission/permission.controller';
 import { SystemController } from './system/systemcontroller';
+import { UserUseCasesModule } from 'src/usecases/usecase.module';
 
 @Module({
-  imports: [RepositoriesModule, EnvironmentConfigModule],
+  imports: [RepositoriesModule, EnvironmentConfigModule,UserUseCasesModule],
   controllers: [AuthController,
     UsersController,
     JobController,

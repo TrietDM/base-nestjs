@@ -1,12 +1,8 @@
-import { IsString, IsEmail,  IsOptional,  Length } from 'class-validator';
+import { IsString, IsEmail,  IsOptional,  Length, IsInt } from 'class-validator';
 export class updateJobDto {
     @IsOptional()
     @IsString()
     name: string;
-
-    @IsOptional()
-    @IsString()
-    permission: string;
     
     @IsOptional()
     @IsString()
@@ -23,18 +19,15 @@ export class updateJobDto {
     @IsOptional()
     @IsString()
     department: string;
-    
-    @IsOptional()
-    @IsString()
-    function: string;
+  
     
     @IsOptional()
     @IsString()
     own: string;
     
     @IsOptional()
-    @IsString()
-    system: string;
+    @IsInt()
+    systemId: number;
 
     @IsOptional()
     @IsString()

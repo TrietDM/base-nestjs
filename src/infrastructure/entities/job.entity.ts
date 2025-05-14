@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { SystemEntity } from './system.entity';
 @Entity('job')
 export class JobEntity {
   @PrimaryGeneratedColumn('increment')
@@ -12,8 +13,7 @@ export class JobEntity {
   using_num: number;
   @Column({ type: 'int', default: 0})
   module_num: number;
-  @Column({ type: 'varchar', length: 50})
-  permission: string;
+
   @Column({ type: 'varchar', length: 50})
   industry: string;
   @Column({ type: 'varchar', length: 50})
@@ -22,13 +22,15 @@ export class JobEntity {
   unit: string;
   @Column({ type: 'varchar', length: 50})
   department: string;
-  @Column({ type: 'varchar', length: 50})
-  function: string;
+
   @Column({ type: 'varchar', length: 50})
   own: string;
 
-  @Column({ type: 'varchar', length: 50})
-  system: string;
+  @ManyToOne(() => SystemEntity, system => system.jobs,{ eager: true})
+  @JoinColumn({ name: 'system_id'})
+  system: SystemEntity;
+  
+
 
   @Column({ type: 'bool', default: true})
   is_active: boolean;

@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Inject, Param, Post, Put} from '@nestjs/
 import { IJobRepository } from 'src/domain/repositories/jobRepository.interface';
 import { createJobDto } from './dtos/create.dto';
 import { updateJobDto } from './dtos/update.dto';
+import { JobDetailViewModel, JobListViewModel } from 'src/domain/model/job.model';
 
     @Controller('jobs')
     export class JobController {
@@ -11,24 +12,28 @@ import { updateJobDto } from './dtos/update.dto';
         ) {}
 
     @Get()
-    async getallJobs() {
-        return this.jobRepo.findAll();
+    async getallJobs(): Promise<JobListViewModel[]> {
+        const jobs = await this.jobRepo.findAll();
+        return jobs.map((job) => new JobListViewModel(job));
     }
 
     @Get('/search')
-    async search(@Body() filter: { name?: string; system?: string; is_active?: boolean } ){
-        return this.jobRepo.search(filter);
+    async search(@Body() search: { name?: string; system?: number; is_active?: boolean } ){
+        const jobs = await this.jobRepo.search(search);
+        return jobs.map((job) => new JobListViewModel(job));
     }
 
     @Get('/filter')
-    async filter(@Body() filter: { name?: string; system?: string; is_active?: boolean } ){
-        return this.jobRepo.filter(filter);
+    async filter(@Body() filter: { name?: string; system?: number; is_active?: boolean } ){
+        const jobs = await this.jobRepo.search(filter);
+        return jobs.map((job) => new JobListViewModel(job));
     }
 
 
-    @Get(':id')
+    @Get('/search/:id')
     async getJob(@Param('id') id: any){
-        return this.jobRepo.getById(id);
+        const job = await this.jobRepo.getById(id);
+        return new JobDetailViewModel(job);
     }
 
  
