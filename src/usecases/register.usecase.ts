@@ -23,12 +23,18 @@ export class RegisterUserUseCase {
     const code = await this.generateCode.execute();
     const hashPassword = await bcrypt.hash(dto.password,10);
     const job = await this.jobRepo.getById(dto.job_id);  
-    job.using_num++;
+    if (!job) 
+      throw new Error('Job not found');
+    else{
+      job.using_num++;
+      await this.jobRepo.save(job);
+    }
 
-    await this.jobRepo.save(job);
+    
 
     const newuser = await this.userRepo.saveUser({
     ...dto,
+    job,
     password: hashPassword,
     code,
     });
