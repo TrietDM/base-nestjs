@@ -31,7 +31,6 @@ export class RegisterUserUseCase {
     }
 
     
-
     const newuser = await this.userRepo.saveUser({
     ...dto,
     job,

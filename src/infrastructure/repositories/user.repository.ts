@@ -68,6 +68,7 @@ export class UserRepository implements IUserRepository {
       newjob.using_num++;
       await this.jobRepo.save(newjob);
       user.job = newjob;
+      delete dto.job_id;
     }
     
     const updatedUser = { ...user, ...dto };
@@ -103,7 +104,8 @@ export class UserRepository implements IUserRepository {
 
   async searchUser(username: string): Promise<any>{
     return this.userRepo.findOne({
-      where : { username: ILike(`%${username}%`)}
+      where : { username: ILike(`%${username}%`)} ,       
+      relations: ['job', 'job.system', 'job.system.funcs'],
     });
   }
 

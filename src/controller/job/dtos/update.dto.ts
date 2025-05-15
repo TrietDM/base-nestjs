@@ -27,7 +27,7 @@ export class updateJobDto {
     
     @IsOptional()
     @IsInt()
-    systemId: number;
+    system_id: number;
 
     @IsOptional()
     @IsString()

@@ -5,7 +5,7 @@ import { NextFunction } from 'express';
 export function RoleMiddleware(requiredRole: string) {
   return(req: any, res: any, next: NextFunction) => {
     const user = req.user;
-    if (!user || user.role !== this.requiredRole) {
+    if (!user || user.role !== requiredRole) {
       throw new ForbiddenException('Permission denied');
     }
     next();

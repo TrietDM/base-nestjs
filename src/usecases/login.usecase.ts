@@ -22,7 +22,8 @@ export class LoginUserUseCase {
     if (!isMatch) {
       throw new Error('Invalid credentials');
     }
-    const payload = { sub: user.id, username: user.username,role: user.job.system.name };
+    const roles = user?.job?.system?.funcs?.map(f => f.name) ?? [];
+    const payload = { sub: user.id, username: user.username,role: roles};
 
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,

@@ -11,10 +11,9 @@ import { SystemRepository } from './system.repository';
 import { PermissionEntity } from '../entities/permission.entity';
 import { SystemEntity } from '../entities/system.entity';
 import { FunctionEntity } from '../entities/function.entity';
-import { RegisterUserUseCase } from 'src/usecases/register.usecase';
-import { LoginUserUseCase } from 'src/usecases/login.usecase';
+import { GenerateUniqueCode } from 'src/usecases/generateUniqueCode.usecase';
 @Module({
-  imports: [TypeOrmConfigModule, TypeOrmModule.forFeature([UserEntity,JobEntity,PermissionEntity,SystemEntity,FunctionEntity,RegisterUserUseCase,LoginUserUseCase])],
+  imports: [TypeOrmConfigModule, TypeOrmModule.forFeature([UserEntity,JobEntity,PermissionEntity,SystemEntity,FunctionEntity])],
   providers: [
     {
       provide: 'IUserRepository',
@@ -35,8 +34,8 @@ import { LoginUserUseCase } from 'src/usecases/login.usecase';
     {
       provide: 'ISystemRepository',
       useClass: SystemRepository,
-    }
-    
+    },
+    GenerateUniqueCode
   ],
   exports: ['IUserRepository',
     'IJobRepository',

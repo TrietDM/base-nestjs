@@ -10,6 +10,7 @@ import { JobEntity } from '../entities/job.entity';
 import { createJobDto } from 'src/controller/job/dtos/create.dto';
 import { updateJobDto } from 'src/controller/job/dtos/update.dto';
 import { SystemEntity } from '../entities/system.entity';
+import { GenerateUniqueCode } from 'src/usecases/generateUniqueCode.usecase';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -22,6 +23,9 @@ export class JobRepository implements IJobRepository {
     private systemRepo: Repository<SystemEntity>,
     @InjectDataSource()
     private _dataSource: DataSource,
+
+    private readonly generateCode: GenerateUniqueCode,
+    
   ) {}
 
 
@@ -38,7 +42,7 @@ export class JobRepository implements IJobRepository {
   async create(dto: createJobDto): Promise<any>{
     try{
       const existingJob = await this.jobRepo.findOne({where: {name: dto.name}});
-      const code = await this.generateUniqueCode();
+      const code = await this.generateCode.execute();
       const system = await this.systemRepo.findOneBy({ id: dto.systemId });
       
       if(existingJob)
@@ -61,7 +65,7 @@ export class JobRepository implements IJobRepository {
     const job = await this.jobRepo.findOne({
       where :{id: id}
     });
-    const system = await this.systemRepo.findOneBy({ id: dto.systemId });
+    const system = await this.systemRepo.findOneBy({ id: dto.system_id });
     job.system = system;
     const updatedUser = { ...job, ...dto };
     return await this.jobRepo.save(updatedUser);
@@ -103,31 +107,6 @@ export class JobRepository implements IJobRepository {
     if (filter.is_active !== undefined) where.is_active = filter.is_active;
 
     return this.jobRepo.find({ where });
-  }
-
-
-
-
-  private async generateUniqueCode(): Promise<string> {
-    const prefix = 'R-';
-    
-    // Tìm bản ghi có code lớn nhất
-    const lastUser = await this.jobRepo
-      .createQueryBuilder('job')
-      .orderBy('job.code', 'DESC')
-      .where("job.code LIKE :prefix", { prefix: `${prefix}%` })
-      .getOne();
-  
-    let nextNumber = 1;
-  
-    if (lastUser?.code) {
-      const lastNumber = parseInt(lastUser.code.replace(prefix, ''), 10);
-      nextNumber = lastNumber + 1;
-    }
-  
-    // Format: R-000001
-    const nextCode = `${prefix}${String(nextNumber).padStart(6, '0')}`;
-    return nextCode;
   }
 
   async save(data: Partial<JobEntity>): Promise<any>{

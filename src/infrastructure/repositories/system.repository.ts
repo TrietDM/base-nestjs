@@ -57,6 +57,7 @@ export class SystemRepository implements ISystemRepository {
       if(!existingSystem)
         return { message: 'Choose another name'};
 
+      const system = await this.systemRepo.findOne({where: {id}});
       const names = dto.functions.map(p => p.name);
       const funcs = await this.functionRepo.find({
         where: names.map(name => ({name}))
@@ -65,9 +66,9 @@ export class SystemRepository implements ISystemRepository {
       if(funcs.length !== names.length)
         return { message: 'Function not exist'};
 
-
-      const update = {...existingSystem,...funcs};
-      return await this.systemRepo.save(update);
+      system.name = dto.name;
+      system.funcs = funcs;
+      return await this.systemRepo.save(system);
     }
     catch (err){    
       console.error('Error creating user:', err);

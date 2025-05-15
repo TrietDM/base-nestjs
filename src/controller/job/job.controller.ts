@@ -30,7 +30,7 @@ import { JobDetailViewModel, JobListViewModel } from 'src/domain/model/job.model
     }
 
 
-    @Get('/search/:id')
+    @Get(':id')
     async getJob(@Param('id') id: any){
         const job = await this.jobRepo.getById(id);
         return new JobDetailViewModel(job);
