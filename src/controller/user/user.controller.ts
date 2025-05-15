@@ -1,6 +1,4 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put} from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { UserEntity } from '../../infrastructure/entities/user.entity';
 import { IUserRepository } from 'src/domain/repositories/userRepository.interface';
 import { createUserDto } from './dtos/register.dto';
 import { loginUserDto } from './dtos/login.dto';

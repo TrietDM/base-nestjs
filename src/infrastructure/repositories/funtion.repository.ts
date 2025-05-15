@@ -63,9 +63,9 @@ export class FunctionRepository implements IFunctionRepository {
       if(!existingFunction)
         return { message: 'No function under that name'};
 
-
-      const update = {...existingFunction,...permissions};
-      return await this.functionRepo.save(update);
+      existingFunction.name = dto.name;
+      existingFunction.permissions = permissions;
+      return await this.functionRepo.save(existingFunction);
     }
     catch (err){    
       console.error('Error creating user:', err);
