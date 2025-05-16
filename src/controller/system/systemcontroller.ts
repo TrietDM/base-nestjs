@@ -2,7 +2,9 @@ import { Body, Controller, Delete, Get, Inject, Param, Post, Put} from '@nestjs/
 import { ISystemRepository } from 'src/domain/repositories/systemRepository.interface';
 import { createSystemDto } from './dtos/create.dto';
 import { updateSystemDto } from './dtos/update.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+    @ApiTags('Systems')
     @Controller('systems')
     export class SystemController {
         constructor(

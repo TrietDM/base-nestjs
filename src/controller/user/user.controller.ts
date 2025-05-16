@@ -6,8 +6,9 @@ import { updateUserDto } from './dtos/update.dto';
 import { RegisterUserUseCase } from 'src/usecases/register.usecase';
 import { LoginUserUseCase } from 'src/usecases/login.usecase';
 import { UserListViewModel } from 'src/domain/model/user.model';
+import { ApiTags } from '@nestjs/swagger';
 
-
+@ApiTags('Users')
     @Controller('users')
     export class UsersController {
         constructor(
@@ -30,7 +31,7 @@ import { UserListViewModel } from 'src/domain/model/user.model';
 
 
     
-    @Get(':search')
+    @Get('/search/:search')
     async search(@Param('search') search: any ){
         return this.userRepo.search(search);
     }

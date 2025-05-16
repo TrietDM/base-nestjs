@@ -2,7 +2,9 @@ import { Body, Controller, Delete, Get, Inject, Param, Post, Put} from '@nestjs/
 import { IFunctionRepository } from 'src/domain/repositories/functionRepository.interface';
 import { createFunctionDto } from './dtos/create.dto';
 import { updateFunctionDto } from './dtos/update.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+    @ApiTags('Functions')
     @Controller('functions')
     export class FunctionController {
         constructor(

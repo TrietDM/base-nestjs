@@ -2,7 +2,9 @@ import { Body, Controller, Delete, Get, Inject, Param, Post, Put} from '@nestjs/
 import { IPermissionRepository } from 'src/domain/repositories/permissionRepository.interface';
 import { createPermissionDto } from './dtos/create.dto';
 import { updatePermissionDto } from './dtos/update.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+    @ApiTags('Permissions')
     @Controller('permissions')
     export class PermissionController {
         constructor(

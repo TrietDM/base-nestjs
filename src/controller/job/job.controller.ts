@@ -3,7 +3,9 @@ import { IJobRepository } from 'src/domain/repositories/jobRepository.interface'
 import { createJobDto } from './dtos/create.dto';
 import { updateJobDto } from './dtos/update.dto';
 import { JobDetailViewModel, JobListViewModel } from 'src/domain/model/job.model';
+import { ApiTags } from '@nestjs/swagger';
 
+    @ApiTags('Jobs')
     @Controller('jobs')
     export class JobController {
         constructor(
